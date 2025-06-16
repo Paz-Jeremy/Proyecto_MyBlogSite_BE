@@ -8,7 +8,7 @@ app.use(express.json());
 
 //Rutas
 app.use('/api/auth', require('./routes/authRoutes'));
-
+app.use('/api/blogs', require('./routes/blogsRoutes'))
 const PORT = process.env.PORT || 3001;
 app.listen(
     PORT, 
