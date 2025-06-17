@@ -19,30 +19,29 @@ exports.getAllBlogs = async (req, res) => {
     return res;
 };
 
+// Crear un nuevo blog
 exports.createBlog = async (req, res) => {
-    try{
-        const {image_url, title, author, description, content, publish_date} = req.body;
-        const {data, error} = await supabaseAnonClient
+    try {
+        const { image_url, title, author, description, content, publish_date, userId } = req.body;
+        const { data, error } = await supabaseAnonClient
         .from('blogs')
-        .insert({
-            image_url, title, author, description, content, publish_date
-        });
+        .insert({ image_url, title, author, description, content, publish_date, userId })
+        if (error) throw error;
+        return res.status(201).json({ data });
     } catch (err) {
-        res.status(err.status || 500).json({error: err.message});
+        return res.status(err.status || 500).json({ error: err.message });
     }
-
-    return res;
 };
 
 // Actualizar un blog
 exports.updateBlog = async (req, res) => {
     try {
         const { id } = req.params;
-        const { image_url, title, author, description, content, publish_date } = req.body;
+        const { image_url, title, author, description, content, publish_date, userId } = req.body;
 
         const { data, error } = await supabaseAnonClient
         .from("blogs")
-        .update({ image_url, title, author, description, content, publish_date })
+        .update({ image_url, title, author, description, content, publish_date, userId })
         .eq("id", id);
 
         if (error) throw error;
