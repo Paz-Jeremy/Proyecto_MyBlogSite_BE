@@ -39,15 +39,22 @@ exports.updateBlog = async (req, res) => {
         const { id } = req.params;
         const { image_url, title, author, description, content, publish_date, userId } = req.body;
 
+        // Añadimos .select() para que nos devuelva filas afectadas
         const { data, error } = await supabaseAnonClient
         .from("blogs")
         .update({ image_url, title, author, description, content, publish_date, userId })
-        .eq("id", id);
+        .eq("id", id)
+        .select();         
 
         if (error) throw error;
-        res.status(200).json({ data: data[0] });
+        if (!data || data.length === 0) {
+        return res.status(404).json({ error: "Blog no encontrado" });
+        }
+
+        return res.status(200).json({ data: data[0] });
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        console.error("Error en updateBlog:", err);
+        return res.status(err.status || 500).json({ error: err.message });
     }
 };
 
