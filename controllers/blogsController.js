@@ -5,7 +5,24 @@ const supabaseAnonClient = createClient(
     process.env.SUPABASE_SERVICE_ROLE
 );
 
-// Puedo usar este para obtener todos los blogs filtrados (Para un usuario en especifico)
+// Obtener blogs por usuario
+exports.getBlogsByUser = async (req, res) => {
+    try {
+        const { userId } = req.params; // Asumiendo que el userId viene en los parámetros de la ruta
+        const { data, error } = await supabaseAnonClient
+            .from("blogs")
+            .select("*")
+            .eq("userId", userId);
+
+        if (error) throw error;
+        res.status(200).json({ data });
+    } catch (err) {
+        res.status(err.status || 500).json({ error: err.message });
+    }
+    return res;
+}
+
+// Obtener todos los blogs
 exports.getAllBlogs = async (req, res) => {
     try{
         const {data, error}= await supabaseAnonClient
