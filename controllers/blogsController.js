@@ -41,8 +41,9 @@ exports.createBlog = async (req, res) => {
     try {
         const { image_url, title, author, description, content, publish_date, userId } = req.body;
         const { data, error } = await supabaseAnonClient
-        .from('blogs')
-        .insert({ image_url, title, author, description, content, publish_date, userId })
+            .from('blogs')
+            .insert({ image_url, title, author, description, content, publish_date, userId })
+            .select(); // <-- Esto hace que te retorne el registro insertado
         if (error) throw error;
         return res.status(201).json({ data });
     } catch (err) {
